@@ -1,7 +1,8 @@
 '''
 Created on Dec 30, 2015
 
-@author: sgorse
+@author: Shirdon Gorse
+Description: This program uses a GUI to create an XML File needed for the Automated Testing process.
 '''
 import sys
 from Tkinter import * 
