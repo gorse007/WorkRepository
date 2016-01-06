@@ -1,8 +1,7 @@
 '''
 Created on Dec 30, 2015
 
-@author: Shirdon Gorse
-Description: This program uses a GUI to create an XML File needed for the Automated Testing process.
+@author: sgorse
 '''
 import sys
 from Tkinter import * 
@@ -15,10 +14,7 @@ import tkFileDialog
 
 
 buttons = []
-counter = 0
-def undisableFinish():
-    if(counter >= 9):
-        buttons[9].config(state = NORMAL)
+entries = []
 
 def prettyPrintET(etNode):
     reader = Sax2.Reader()
@@ -33,12 +29,12 @@ def createElement(elementName,value,root):
     name.text = value
 
 def getInfo(entry, element,root, buttonIndex):
-    global counter
     info = entry.get()
-    info = info.replace('/','\\')
     if info:
-        counter = counter + 1
-        undisableFinish()
+        if element == "detectorfilereference":
+            info = info.replace('/','\\\\')
+        else:
+            info = info.replace('/','\\')
         buttons[buttonIndex].config(state = DISABLED)
         createElement(element,info,root)
     
@@ -47,7 +43,6 @@ def callback():
     print path
 
 def getInfoAndName(entry, element,root, buttonIndex):
-    global counter
     info = entry.get()
     realPath = info.replace('/','\\')
     index = len(realPath) - 1
@@ -55,8 +50,6 @@ def getInfoAndName(entry, element,root, buttonIndex):
         index = index - 1
     path = realPath[:index]
     if path:
-        counter = counter + 1 
-        undisableFinish()
         createElement(element,path,root)
     
     name = realPath[index+1:]
@@ -68,10 +61,7 @@ def getInfoAndName(entry, element,root, buttonIndex):
 
 def save():
     global savePath
-    global counter
     savePath = tkFileDialog.askdirectory()
-    counter = counter + 1
-    undisableFinish()
 
 def finish(app):
     app.destroy()
@@ -87,14 +77,14 @@ def createGUI(root, savePath):
     
     
     
-    Label(frame, text="Software Version").grid(row=0)
+    Label(frame, text="Software Version*").grid(row=0)
     e1 = Entry(frame)
     e1.grid(row=0, column=1)
-    button1 = Button(frame, text="Enter", width=20,command = lambda: getInfo(e1, 'softwareVersion', root, 0))
+    button1 = Button(frame, text="Enter", width=20,command = lambda: getInfo(e1, 'softwareversion', root, 0))
     button1.grid(row=0,column = 2)
     buttons.append(button1)
     
-    Label(frame, text="Domain").grid(row=1)
+    Label(frame, text="Domain*").grid(row=1)
     e2 = Entry(frame)
     e2.grid(row=1, column=1)
     button2 = Button(frame, text="Enter", width=20,command = lambda: getInfo(e2, 'domain', root, 1))
@@ -102,7 +92,7 @@ def createGUI(root, savePath):
     buttons.append(button2)
     
     var1 = StringVar()
-    Label(frame, text="Browser Path").grid(row=2)
+    Label(frame, text="Browser Path*").grid(row=2)
     e3 = Entry(frame, textvariable=var1)
     e3.grid(row=2, column=1)
     Button(frame, text="Browse", width=20,command=lambda:var1.set(tkFileDialog.askopenfilename())).grid(row=2,column = 2)
@@ -111,7 +101,7 @@ def createGUI(root, savePath):
     buttons.append(button3)
     
     var2 = StringVar()
-    Label(frame, text="CommServer Path").grid(row=4)
+    Label(frame, text="CommServer Path*").grid(row=4)
     e5 = Entry(frame, textvariable=var2)
     e5.grid(row=4, column=1)
     Button(frame, text="Browse", width=20,command=lambda:var2.set(tkFileDialog.askopenfilename())).grid(row=4,column = 2)
@@ -128,14 +118,14 @@ def createGUI(root, savePath):
     button5.grid(row=6,column = 3)
     buttons.append(button5)
     
-    Label(frame, text="CPU ID").grid(row=7)
+    Label(frame, text="CPU ID*").grid(row=7)
     e8 = Entry(frame)
     e8.grid(row=7, column=1)
     button6 = Button(frame, text="Enter", width=20,command = lambda: getInfo(e8, 'cpuid', root, 5))
     button6.grid(row=7,column = 2)
     buttons.append(button6)
     
-    Label(frame, text="IP Address").grid(row=8)
+    Label(frame, text="IP Address*").grid(row=8)
     e9 = Entry(frame)
     e9.grid(row=8, column=1)
     button7 = Button(frame, text="Enter", width=20,command = lambda: getInfo(e9, 'ipaddress', root, 6))
@@ -159,7 +149,6 @@ def createGUI(root, savePath):
     
     finishButton = Button(frame, text = "Finish", width = 15, command= (lambda: finish(app)))
     finishButton.grid(row=11, column = 2)
-    finishButton.config(state = DISABLED)
     buttons.append(finishButton)
     app.mainloop()
 
