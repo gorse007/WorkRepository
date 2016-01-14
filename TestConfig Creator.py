@@ -13,7 +13,7 @@ from xml.etree.ElementTree import Element
 import xml.etree.ElementTree as etree
 from xml.dom import minidom
 import tkFileDialog
-
+import webbrowser
 
 buttons = []
 entries = []
@@ -73,9 +73,8 @@ def getInfo(entry, element,root):
         info = info.replace('/','\\')
     createElement(element,info,root)
     
-def callback():
-    path = tkFileDialog.askopenfile()
-    print path
+def callback(event):
+    webbrowser.open_new(r"http://www.google.com")
 
 def getInfoAndName(entry, element,root):
     info = entry.get()
@@ -123,6 +122,8 @@ def upload():
     putTextInEntry(6)
     putTextInEntry(7)
     
+def help(app):
+    tkMessageBox.showinfo("Help", "Software Version (Required):\nTo find the software version of the specific device you want to test, go into the Browser application. Once the Browser Application is opened, under the Help menu, select About. In the information given the version number of the Network Browser should be given. \n\nDomain and IP Address (Required): \nIn the Browser application you are testing, under the channel column, there should be an icon of the communication server. Next to it, you will see the following information: \nDomain - IP Address - Software Version\n\nBrowser Application Path and Communication Server Application Path(Required):\nGo to: C:\Program Files\ISS Autoscope\nUnder this directory, choose the software version you would like to test. In the directory, choose the Browser application for the Browser Application Path, and the comm server application for the Communication Server Application Path.\n\nCPU ID (Required):\nTo find the CPU ID, go into the Browser Application. Learn the Network, and find the device that is going to be used in the automated test. Once found, look under the CPU Identifier column to find the CPU ID.\n\nDetector File Reference and Oplog File Name (Optional):\nIf you already have the detector file reference file and/or the oplog file, you may choose the files by pressing the Browse button, and selecting the appropriate files.")
     
 def finish(app, root):
     if (len(entries[0].get())!=0) and (len(entries[1].get())!=0) and (len(entries[2].get())!=0 and (len(entries[3].get())!=0)) and (len(entries[5].get())!=0) and (len(entries[6].get())!=0):
@@ -150,11 +151,18 @@ def createGUI(root, savePath):
     app.title("Create Testconfig File")
     app.geometry("650x500+200+200")
     
+    menubar = Menu(app)
+    menubar.add_command(label="Help", command=lambda: help(app))
+    menubar.add_command(label="Quit", command=app.quit)
+    app.config(menu=menubar)
+    
     frame = Frame(app, width = 780, height = 600, bd = 3)
     frame.pack()
     
     var1 = StringVar()
-    Label(frame, text="Software Version*").grid(row=0)
+    link1 = Label(frame, text="Software Version*")
+    link1.grid(row=0)
+    link1.bind("<Button-1>", callback)
     e1 = Entry(frame, textvariable=var1)
     e1.grid(row=0, column=1)
     entries.append(e1)
